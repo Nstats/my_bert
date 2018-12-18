@@ -1,8 +1,8 @@
 import pandas as pd
 
-train_dir_csv = 'C:/MyProjects/my_bert/data/quaro/train.csv'
-train_dir_tsv = 'C:/MyProjects/my_bert/data/quaro/train.tsv'
-dev_dir_tsv = 'C:/MyProjects/my_bert/data/quaro/dev.tsv'
+train_dir_csv = './data/quaro/train.csv'
+train_dir_tsv = './data/quaro/train.tsv'
+dev_dir_tsv = './data/quaro/dev.tsv'
 
 dev_size = 20000
 

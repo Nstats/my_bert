@@ -127,7 +127,7 @@ flags.DEFINE_integer(
 class InputExample(object):
   """A single training/test example for simple sequence classification."""
 
-  def __init__(self, guid, text_a, text_b=None, label=None):
+  def __init__(self, qid, text, label=None):
     """Constructs a InputExample.
 
     Args:
@@ -139,9 +139,8 @@ class InputExample(object):
       label: (Optional) string. The label of the example. This should be
         specified for train and dev examples, but not for test examples.
     """
-    self.guid = guid
-    self.text_a = text_a
-    self.text_b = text_b
+    self.qid = qid
+    self.text = text
     self.label = label
 
 
@@ -185,8 +184,8 @@ class DataProcessor(object):
       return lines
 
 
-class MrpcProcessor(DataProcessor):
-  """Processor for the MRPC data set (GLUE version)."""
+class QuaroProcessor(DataProcessor):
+  """Processor for the quaro data set (GLUE version)."""
 
   def get_train_examples(self, data_dir):
     """See base class."""
@@ -211,17 +210,14 @@ class MrpcProcessor(DataProcessor):
     """Creates examples for the training and dev sets."""
     examples = []
     for (i, line) in enumerate(lines):
-      if i == 0:
-        continue
-      guid = "%s-%s" % (set_type, i)
-      text_a = tokenization.convert_to_unicode(line[3])
-      text_b = tokenization.convert_to_unicode(line[4])
+      qid = "%s-%s" % (set_type, i)
+      text = tokenization.convert_to_unicode(line[2])
       if set_type == "test":
         label = "0"
       else:
         label = tokenization.convert_to_unicode(line[0])
       examples.append(
-          InputExample(guid=guid, text_a=text_a, text_b=text_b, label=label))
+          InputExample(qid=qid, text=text, label=label))
     return examples
 
 
@@ -611,7 +607,7 @@ def convert_examples_to_features(examples, label_list, max_seq_length,
 def main(_):
   tf.logging.set_verbosity(tf.logging.INFO)
 
-  processors = {"mrpc": MrpcProcessor}
+  processors = {"quaro": QuaroProcessor}
 
   if not FLAGS.do_train and not FLAGS.do_eval and not FLAGS.do_predict:
     raise ValueError(

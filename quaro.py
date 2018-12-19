@@ -32,7 +32,7 @@ FLAGS = flags.FLAGS
 
 ## Required parameters
 flags.DEFINE_string(
-    "data_dir", './data/quaro/train.tsv',
+    "data_dir", './data/quaro',
     "The input data dir. Should contain the .tsv files (or other data files) "
     "for the task.")
 
@@ -230,8 +230,6 @@ def convert_single_example(ex_index, example, label_list, max_seq_length,
 
   tokens_a = tokenizer.tokenize(example.text)
   tokens_b = None
-  if example.text_b:
-    tokens_b = tokenizer.tokenize(example.text_b)
 
   if tokens_b:
     # Modifies `tokens_a` and `tokens_b` in place so that the total
@@ -297,7 +295,7 @@ def convert_single_example(ex_index, example, label_list, max_seq_length,
   label_id = label_map[example.label]
   if ex_index < 5:
     tf.logging.info("*** Example ***")
-    tf.logging.info("guid: %s" % (example.guid))
+    # tf.logging.info("guid: %s" % (example.guid))
     tf.logging.info("tokens: %s" % " ".join(
         [tokenization.printable_text(x) for x in tokens]))
     tf.logging.info("input_ids: %s" % " ".join([str(x) for x in input_ids]))
@@ -512,9 +510,13 @@ def model_fn_builder(bert_config, num_labels, init_checkpoint, learning_rate,
       def metric_fn(per_example_loss, label_ids, logits):
         predictions = tf.argmax(logits, axis=-1, output_type=tf.int32)
         accuracy = tf.metrics.accuracy(label_ids, predictions)
+        recall = tf.metrics.recall(label_ids, predictions)
+        precision = tf.metrics.precision(label_ids, predictions)
         loss = tf.metrics.mean(per_example_loss)
         return {
             "eval_accuracy": accuracy,
+            "eval_recall": recall,
+            "eval_precision": precision,
             "eval_loss": loss,
         }
 
@@ -765,9 +767,4 @@ def main(_):
 
 
 if __name__ == "__main__":
-  flags.mark_flag_as_required("data_dir")
-  flags.mark_flag_as_required("task_name")
-  flags.mark_flag_as_required("vocab_file")
-  flags.mark_flag_as_required("bert_config_file")
-  flags.mark_flag_as_required("output_dir")
   tf.app.run()

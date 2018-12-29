@@ -520,7 +520,7 @@ def model_fn_builder(bert_config, num_labels, init_checkpoint, learning_rate,
             "eval_loss": loss
         }
 
-      eval_metrics = (metric_fn, [per_example_loss, label_ids, logits])
+      eval_metrics = metric_fn(per_example_loss, label_ids, logits)
       # or tf.estimator.EstimatorSpec
       output_spec = tf.estimator.EstimatorSpec(
           mode=mode,

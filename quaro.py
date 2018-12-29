@@ -522,11 +522,11 @@ def model_fn_builder(bert_config, num_labels, init_checkpoint, learning_rate,
 
       eval_metrics = (metric_fn, [per_example_loss, label_ids, logits])
       # or tf.estimator.EstimatorSpec
-      output_spec = tf.contrib.tpu.TPUEstimatorSpec(
+      output_spec = tf.estimator.EstimatorSpec(
           mode=mode,
           loss=total_loss,
-          eval_metrics=eval_metrics,
-          scaffold_fn=scaffold_fn)
+          eval_metric_ops=eval_metrics,
+          scaffold=scaffold_fn)
     else:
       # or tf.estimator.EstimatorSpec
       output_spec = tf.contrib.tpu.TPUEstimatorSpec(

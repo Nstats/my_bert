@@ -499,7 +499,6 @@ def model_fn_builder(bert_config, num_labels, init_checkpoint, learning_rate,
       train_op = optimization.create_optimizer(
           total_loss, learning_rate, num_train_steps, num_warmup_steps, use_tpu)
 
-      # or tf.estimator.EstimatorSpec
       output_spec = tf.contrib.tpu.TPUEstimatorSpec(
           mode=mode,
           loss=total_loss,
@@ -528,7 +527,6 @@ def model_fn_builder(bert_config, num_labels, init_checkpoint, learning_rate,
           eval_metric_ops=eval_metrics,
           scaffold=scaffold_fn)
     else:
-      # or tf.estimator.EstimatorSpec
       output_spec = tf.contrib.tpu.TPUEstimatorSpec(
           mode=mode, predictions=probabilities, scaffold_fn=scaffold_fn)
     return output_spec
@@ -554,7 +552,10 @@ def input_fn_builder(features, seq_length, is_training, drop_remainder):
 
   def input_fn(params):
     """The actual input function."""
-    batch_size = params["batch_size"]
+    if is_training:
+      batch_size = params["train_batch_size"]
+    else:
+      batch_size = params["eval_batch_size"]
 
     num_examples = len(features)
 

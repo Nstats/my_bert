@@ -365,7 +365,7 @@ def file_based_input_fn_builder(input_file, seq_length, is_training,
 
   def input_fn(params):
     """The actual input function."""
-    batch_size = params["batch_size"]
+    batch_size = params["train_batch_size"]
 
     # For training, we want a lot of parallel reading and shuffling.
     # For eval, we want no shuffling and parallel reading doesn't matter.
@@ -454,7 +454,6 @@ def model_fn_builder(bert_config, num_labels, init_checkpoint, learning_rate,
 
   def model_fn(features, labels, mode, params):  # pylint: disable=unused-argument
     """The `model_fn` for TPUEstimator."""
-
     tf.logging.info("*** Features ***")
     for name in sorted(features.keys()):
       tf.logging.info("  name = %s, shape = %s" % (name, features[name].shape))
@@ -500,6 +499,7 @@ def model_fn_builder(bert_config, num_labels, init_checkpoint, learning_rate,
       train_op = optimization.create_optimizer(
           total_loss, learning_rate, num_train_steps, num_warmup_steps, use_tpu)
 
+      # or tf.estimator.EstimatorSpec
       output_spec = tf.contrib.tpu.TPUEstimatorSpec(
           mode=mode,
           loss=total_loss,
@@ -521,12 +521,14 @@ def model_fn_builder(bert_config, num_labels, init_checkpoint, learning_rate,
         }
 
       eval_metrics = (metric_fn, [per_example_loss, label_ids, logits])
+      # or tf.estimator.EstimatorSpec
       output_spec = tf.contrib.tpu.TPUEstimatorSpec(
           mode=mode,
           loss=total_loss,
           eval_metrics=eval_metrics,
           scaffold_fn=scaffold_fn)
     else:
+      # or tf.estimator.EstimatorSpec
       output_spec = tf.contrib.tpu.TPUEstimatorSpec(
           mode=mode, predictions=probabilities, scaffold_fn=scaffold_fn)
     return output_spec
@@ -674,13 +676,19 @@ def main(_):
 
   # If TPU is not available, this will fall back to normal Estimator on CPU
   # or GPU.
-  estimator = tf.contrib.tpu.TPUEstimator(
-      use_tpu=FLAGS.use_tpu,
-      model_fn=model_fn,
-      config=run_config,
-      train_batch_size=FLAGS.train_batch_size,
-      eval_batch_size=FLAGS.eval_batch_size,
-      predict_batch_size=FLAGS.predict_batch_size)
+
+  # estimator = tf.contrib.tpu.TPUEstimator(
+  #     use_tpu=FLAGS.use_tpu,
+  #     model_fn=model_fn,
+  #     config=run_config,
+  #     train_batch_size=FLAGS.train_batch_size,
+  #     eval_batch_size=FLAGS.eval_batch_size,
+  #     predict_batch_size=FLAGS.predict_batch_size)
+
+  estimator = tf.estimator.Estimator(model_fn=model_fn, config=bert_config,
+                                     params={'train_batch_size': FLAGS.train_batch_size,
+                                             'eval_batch_size': FLAGS.eval_batch_size,
+                                             'predict_batch_size': FLAGS.predict_batch_size})
 
   if FLAGS.do_train:
     train_file = os.path.join(FLAGS.output_dir, "train.tf_record")

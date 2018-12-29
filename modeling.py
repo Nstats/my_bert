@@ -133,7 +133,7 @@ class BertModel(object):
                input_ids,
                input_mask=None,
                token_type_ids=None,
-               use_one_hot_embeddings=True,
+               use_one_hot_embeddings=False,
                scope=None):
     """Constructor for BertModel.
 
@@ -334,6 +334,7 @@ def get_assignment_map_from_checkpoint(tvars, init_checkpoint):
   for x in init_vars:
     (name, var) = (x[0], x[1])
     if name not in name_to_variable:
+      print(name, "not in your graph but in ckpt's graph.")
       continue
     assignment_map[name] = name
     initialized_variable_names[name] = 1

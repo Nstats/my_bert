@@ -685,7 +685,7 @@ def main(_):
   #     eval_batch_size=FLAGS.eval_batch_size,
   #     predict_batch_size=FLAGS.predict_batch_size)
 
-  estimator = tf.estimator.Estimator(model_fn=model_fn, config=bert_config,
+  estimator = tf.estimator.Estimator(model_fn=model_fn, config=run_config,
                                      params={'train_batch_size': FLAGS.train_batch_size,
                                              'eval_batch_size': FLAGS.eval_batch_size,
                                              'predict_batch_size': FLAGS.predict_batch_size})

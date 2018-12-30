@@ -530,8 +530,8 @@ def model_fn_builder(bert_config, num_labels, init_checkpoint, learning_rate,
           eval_metric_ops=eval_metrics,
           scaffold=scaffold_fn)
     else:
-      output_spec = tf.contrib.tpu.TPUEstimatorSpec(
-          mode=mode, predictions=probabilities, scaffold_fn=scaffold_fn)
+      output_spec = tf.estimator.EstimatorSpec(
+          mode=mode, predictions=probabilities, scaffold=scaffold_fn)
     return output_spec
 
   return model_fn
@@ -649,15 +649,19 @@ def main(_):
         FLAGS.tpu_name, zone=FLAGS.tpu_zone, project=FLAGS.gcp_project)
 
   is_per_host = tf.contrib.tpu.InputPipelineConfig.PER_HOST_V2
-  run_config = tf.contrib.tpu.RunConfig(
-      cluster=tpu_cluster_resolver,
-      master=FLAGS.master,
+  # run_config = tf.contrib.tpu.RunConfig(
+  #     cluster=tpu_cluster_resolver,
+  #     master=FLAGS.master,
+  #     model_dir=FLAGS.output_dir,
+  #     save_checkpoints_steps=FLAGS.save_checkpoints_steps,
+  #     tpu_config=tf.contrib.tpu.TPUConfig(
+  #         iterations_per_loop=FLAGS.iterations_per_loop,
+  #         num_shards=FLAGS.num_tpu_cores,
+  #         per_host_input_for_training=is_per_host))
+
+  run_config = tf.estimator.RunConfig(
       model_dir=FLAGS.output_dir,
-      save_checkpoints_steps=FLAGS.save_checkpoints_steps,
-      tpu_config=tf.contrib.tpu.TPUConfig(
-          iterations_per_loop=FLAGS.iterations_per_loop,
-          num_shards=FLAGS.num_tpu_cores,
-          per_host_input_for_training=is_per_host))
+      save_checkpoints_steps=FLAGS.save_checkpoints_steps)
 
   train_examples = None
   num_train_steps = None
@@ -677,17 +681,6 @@ def main(_):
       num_warmup_steps=num_warmup_steps,
       use_tpu=FLAGS.use_tpu,
       use_one_hot_embeddings=FLAGS.use_tpu)
-
-  # If TPU is not available, this will fall back to normal Estimator on CPU
-  # or GPU.
-
-  # estimator = tf.contrib.tpu.TPUEstimator(
-  #     use_tpu=FLAGS.use_tpu,
-  #     model_fn=model_fn,
-  #     config=run_config,
-  #     train_batch_size=FLAGS.train_batch_size,
-  #     eval_batch_size=FLAGS.eval_batch_size,
-  #     predict_batch_size=FLAGS.predict_batch_size)
 
   estimator = tf.estimator.Estimator(model_fn=model_fn, config=run_config,
                                      params={'train_batch_size': FLAGS.train_batch_size,

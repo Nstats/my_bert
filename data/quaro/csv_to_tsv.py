@@ -4,9 +4,9 @@ import re
 
 dev_size = 20000
 
-train_dir_csv = './data/quaro/train.csv'
-train_dir_tsv = './data/quaro/train.tsv'
-dev_dir_tsv = './data/quaro/dev.tsv'
+train_dir_csv = './train.csv'
+train_dir_tsv = './train.tsv'
+dev_dir_tsv = './dev.tsv'
 
 
 def remove_link_and_slash_split(sen):
@@ -73,11 +73,11 @@ for i in range(size):
     ftrain.write(str(target[i])+'\t'+str(id[i])+'\t'+line+'\n')
 ftrain.close()
 
-id_dev = dev_df['qid']
+dev_id = dev_df['qid']
 dev_text = dev_df['question_text'].fillna('').values
 dev_target = dev_df['target']
 fdev = open(dev_dir_tsv, 'w', encoding='utf-8')
 for i in range(dev_size):
     line = dev_text[i].replace('\n', ' ', 100).replace('\t', ' ', 100)
-    fdev.write(str(target[i])+'\t'+str(id[i])+'\t'+line+'\n')
+    fdev.write(str(dev_target[i])+'\t'+str(dev_id[i])+'\t'+line+'\n')
 fdev.close()

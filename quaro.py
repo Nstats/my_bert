@@ -507,9 +507,9 @@ def model_fn_builder(bert_config, num_labels, init_checkpoint, learning_rate,
         precision, precision_update = tf.metrics.precision(label_ids, predictions)
         loss = tf.metrics.mean(per_example_loss)
         return {
-            "eval_accuracy": accuracy_update,
-            "eval_recall": recall_update,
-            "eval_precision": precision_update,
+            "eval_accuracy": (accuracy, accuracy_update),
+            "eval_recall": (recall, recall_update),
+            "eval_precision": (precision, precision_update),
             "eval_loss": loss
         }
 

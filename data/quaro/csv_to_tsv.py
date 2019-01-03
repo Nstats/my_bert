@@ -4,7 +4,7 @@ import pandas as pd
 dev_size = 20000
 
 train_dir_csv = './train.csv'
-train_14_dir_csv = './train_balanced.csv'
+train_balanced_dir_csv = './train_balanced.csv'
 dev_dir_csv = './dev.csv'
 train_dir_tsv = './train.tsv'
 dev_dir_tsv = './dev.tsv'
@@ -63,10 +63,10 @@ def preprocessing(file_dir):
 
 
 train_df, dev_df = preprocessing(train_dir_csv)
-train_df.to_csv(train_14_dir_csv)
+train_df.to_csv(train_balanced_dir_csv)
 dev_df.to_csv(dev_dir_csv)
 
-train_df = pd.DataFrame(pd.read_csv(train_14_dir_csv, encoding='utf-8', engine='python'))
+train_df = pd.DataFrame(pd.read_csv(train_balanced_dir_csv, encoding='utf-8', engine='python'))
 id = train_df['qid']
 text = train_df['question_text'].fillna('').values
 target = train_df['target']

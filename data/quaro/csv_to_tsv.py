@@ -55,7 +55,7 @@ def preprocessing(file_dir):
     dev_df = df[:dev_size]
     train_df = df[dev_size:]
     df_target_1 = train_df[train_df['target'] == 1]
-    for i in range(14):
+    for i in range(1):
         train_df = train_df.append(df_target_1)
     train_df = train_df.sample(frac=1.0)
 

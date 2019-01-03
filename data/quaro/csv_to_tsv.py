@@ -1,10 +1,11 @@
-import tensorflow as tf
-import pandas as pd
 import re
+import pandas as pd
 
 dev_size = 20000
 
 train_dir_csv = './train.csv'
+train_14_dir_csv = './train_balanced.csv'
+dev_dir_csv = './dev.csv'
 train_dir_tsv = './train.tsv'
 dev_dir_tsv = './dev.tsv'
 
@@ -45,9 +46,9 @@ def remove_formula(sen):
 
 
 def preprocessing(file_dir):
-    df = pd.DataFrame(pd.read_csv(file_dir, engine='python'))
+    df = pd.DataFrame(pd.read_csv(file_dir, encoding='utf-8', engine='python'))
     question_text = df['question_text'].fillna('').apply(
-        lambda x: remove_link_and_slash_split(remove_formula(x))).values
+        lambda x: remove_link_and_slash_split(remove_formula(x)))
     df['question_text'] = question_text
 
     df = df.sample(frac=1.0)
@@ -62,17 +63,21 @@ def preprocessing(file_dir):
 
 
 train_df, dev_df = preprocessing(train_dir_csv)
+train_df.to_csv(train_14_dir_csv)
+dev_df.to_csv(dev_dir_csv)
+
+train_df = pd.DataFrame(pd.read_csv(train_14_dir_csv, encoding='utf-8', engine='python'))
 id = train_df['qid']
 text = train_df['question_text'].fillna('').values
 target = train_df['target']
 size = train_df.shape[0]
-
 ftrain = open(train_dir_tsv, 'w', encoding='utf-8')
 for i in range(size):
     line = text[i].replace('\n', ' ', 100).replace('\t', ' ', 100)
     ftrain.write(str(target[i])+'\t'+str(id[i])+'\t'+line+'\n')
 ftrain.close()
 
+dev_df = pd.DataFrame(pd.read_csv(dev_dir_csv, encoding='utf-8', engine='python'))
 dev_id = dev_df['qid']
 dev_text = dev_df['question_text'].fillna('').values
 dev_target = dev_df['target']

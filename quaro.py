@@ -474,19 +474,11 @@ def model_fn_builder(bert_config, num_labels, init_checkpoint, learning_rate,
 
     tvars = tf.trainable_variables()
     initialized_variable_names = {}
-    scaffold_fn = None
+
     if init_checkpoint:
       (assignment_map, initialized_variable_names
       ) = modeling.get_assignment_map_from_checkpoint(tvars, init_checkpoint)
-      if use_tpu:
-
-        def tpu_scaffold():
-          tf.train.init_from_checkpoint(init_checkpoint, assignment_map)
-          return tf.train.Scaffold()
-
-        scaffold_fn = tpu_scaffold
-      else:
-        tf.train.init_from_checkpoint(init_checkpoint, assignment_map)
+      tf.train.init_from_checkpoint(init_checkpoint, assignment_map)
 
     tf.logging.info("**** Trainable Variables ****")
     for var in tvars:
@@ -505,33 +497,30 @@ def model_fn_builder(bert_config, num_labels, init_checkpoint, learning_rate,
       output_spec = tf.estimator.EstimatorSpec(
           mode=mode,
           loss=total_loss,
-          train_op=train_op,
-          scaffold=scaffold_fn)
-    elif mode == tf.estimator.ModeKeys.EVAL:
+          train_op=train_op)
 
+    elif mode == tf.estimator.ModeKeys.EVAL:
       def metric_fn(per_example_loss, label_ids, logits):
         predictions = tf.argmax(logits, axis=-1, output_type=tf.int32)
-        accuracy = tf.metrics.accuracy(label_ids, predictions)
-        recall = tf.metrics.recall(label_ids, predictions)
-        precision = tf.metrics.precision(label_ids, predictions)
+        accuracy, accuracy_update = tf.metrics.accuracy(label_ids, predictions)
+        recall, recall_update = tf.metrics.recall(label_ids, predictions)
+        precision, precision_update = tf.metrics.precision(label_ids, predictions)
         loss = tf.metrics.mean(per_example_loss)
         return {
-            "eval_accuracy": accuracy,
-            "eval_recall": recall,
-            "eval_precision": precision,
+            "eval_accuracy": accuracy_update,
+            "eval_recall": recall_update,
+            "eval_precision": precision_update,
             "eval_loss": loss
         }
 
       eval_metrics = metric_fn(per_example_loss, label_ids, logits)
-      # or tf.estimator.EstimatorSpec
       output_spec = tf.estimator.EstimatorSpec(
           mode=mode,
           loss=total_loss,
-          eval_metric_ops=eval_metrics,
-          scaffold=scaffold_fn)
+          eval_metric_ops=eval_metrics)
     else:
       output_spec = tf.estimator.EstimatorSpec(
-          mode=mode, predictions=probabilities, scaffold=scaffold_fn)
+          mode=mode, predictions=probabilities)
     return output_spec
 
   return model_fn
@@ -642,22 +631,6 @@ def main(_):
 
   tokenizer = tokenization.FullTokenizer(
       vocab_file=FLAGS.vocab_file, do_lower_case=FLAGS.do_lower_case)
-
-  tpu_cluster_resolver = None
-  if FLAGS.use_tpu and FLAGS.tpu_name:
-    tpu_cluster_resolver = tf.contrib.cluster_resolver.TPUClusterResolver(
-        FLAGS.tpu_name, zone=FLAGS.tpu_zone, project=FLAGS.gcp_project)
-
-  is_per_host = tf.contrib.tpu.InputPipelineConfig.PER_HOST_V2
-  # run_config = tf.contrib.tpu.RunConfig(
-  #     cluster=tpu_cluster_resolver,
-  #     master=FLAGS.master,
-  #     model_dir=FLAGS.output_dir,
-  #     save_checkpoints_steps=FLAGS.save_checkpoints_steps,
-  #     tpu_config=tf.contrib.tpu.TPUConfig(
-  #         iterations_per_loop=FLAGS.iterations_per_loop,
-  #         num_shards=FLAGS.num_tpu_cores,
-  #         per_host_input_for_training=is_per_host))
 
   run_config = tf.estimator.RunConfig(
       model_dir=FLAGS.output_dir,

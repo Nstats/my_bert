@@ -51,11 +51,11 @@ flags.DEFINE_string("train_file", './data/squad/train-v2.0.json',
                     "SQuAD json for training. E.g., train-v1.1.json")
 
 flags.DEFINE_string(
-    "predict_file", './data/squad/dev-v1.1.json',
-    "SQuAD json for predictions. E.g., dev-v1.1.json or test-v2.0.json")
+    "predict_file", './data/squad/dev-v2.0.json',
+    "SQuAD json for predictions. E.g., dev-v1.1.json or test-v1.1.json")
 
 flags.DEFINE_string(
-    "init_checkpoint", './data/pretrained/uncased_base/bert_model.ckpt',
+    "init_checkpoint", './data/pretrained_model/uncased_base/bert_model.ckpt',
     "Initial checkpoint (usually from a pre-trained BERT model).")
 
 flags.DEFINE_bool(

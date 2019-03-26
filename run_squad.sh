@@ -14,7 +14,8 @@ python python run_squad.py \
 --doc_stride=128 \
 --output_dir=./data/squad/output \
 --use_tpu=False \
---version_2_with_negative=True
+--version_2_with_negative=True \
+--layer_used = -1
 python ./data/squad/evaluate-v2.0.py './data/squad/dev-v2.0.json' './data/squad/output/predictions.json' \
 --na-prob-file ./data/squad/output/null_odds.json
 

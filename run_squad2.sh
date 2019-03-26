@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-python python run_squad.py \
+python run_squad.py \
 --vocab_file=./data/pretrained_model/uncased_base/vocab.txt \
 --bert_config_file=./data/pretrained_model/uncased_base/bert_config.json \
 --init_checkpoint=./data/pretrained_model/uncased_base/bert_model.ckpt \

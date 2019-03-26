@@ -18,3 +18,5 @@ python ./data/squad/evaluate-v2.0.py './data/squad/dev-v2.0.json' './data/squad/
 #   "best_f1": 76.10335982008996,
 #   "best_f1_thresh": -4.95320200920105
 # }
+
+# use model.get_all_encoder_layers()[-6]

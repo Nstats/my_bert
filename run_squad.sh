@@ -2,6 +2,7 @@
 python run_squad.py
 python ./data/squad/evaluate-v2.0.py './data/squad/dev-v2.0.json' './data/squad/output/predictions.json' --na-prob-file ./data/squad/output/null_odds.json
 
+# original setting:
 # {
 #   "exact": 71.9952834161543,
 #   "f1": 75.63946351369651,

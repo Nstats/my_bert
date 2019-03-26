@@ -28,6 +28,7 @@ import optimization
 import tokenization
 import six
 import tensorflow as tf
+import time
 
 flags = tf.flags
 
@@ -78,6 +79,11 @@ flags.DEFINE_integer(
     "max_query_length", 64,
     "The maximum number of tokens for the question. Questions longer than "
     "this will be truncated to this length.")
+
+flags.DEFINE_integer(
+    "layer_used", -1,
+    "layer used in BERT model. self.sequence_output = self.all_encoder_layers[-1]"
+    "It's limited by bert_config.num_hidden_layers")
 
 flags.DEFINE_bool("do_train", True, "Whether to run training.")
 
@@ -550,7 +556,7 @@ def _check_is_max_context(doc_spans, cur_span_index, position):
 
 
 def create_model(bert_config, is_training, input_ids, input_mask, segment_ids,
-                 use_one_hot_embeddings):
+                 use_one_hot_embeddings, layer_used):
   """Creates a classification model."""
   model = modeling.BertModel(
       config=bert_config,
@@ -561,7 +567,7 @@ def create_model(bert_config, is_training, input_ids, input_mask, segment_ids,
       use_one_hot_embeddings=use_one_hot_embeddings)
 
   # final_hidden = model.get_sequence_output()
-  final_hidden = model.get_all_encoder_layers()[-6]
+  final_hidden = model.get_all_encoder_layers()[layer_used]
 
   final_hidden_shape = modeling.get_shape_list(final_hidden, expected_rank=3)
   batch_size = final_hidden_shape[0]
@@ -592,7 +598,7 @@ def create_model(bert_config, is_training, input_ids, input_mask, segment_ids,
 
 def model_fn_builder(bert_config, init_checkpoint, learning_rate,
                      num_train_steps, num_warmup_steps, use_tpu,
-                     use_one_hot_embeddings):
+                     use_one_hot_embeddings, layer_used):
   """Returns `model_fn` closure for TPUEstimator."""
 
   def model_fn(features, labels, mode, params):  # pylint: disable=unused-argument
@@ -615,7 +621,8 @@ def model_fn_builder(bert_config, init_checkpoint, learning_rate,
         input_ids=input_ids,
         input_mask=input_mask,
         segment_ids=segment_ids,
-        use_one_hot_embeddings=use_one_hot_embeddings)
+        use_one_hot_embeddings=use_one_hot_embeddings,
+        layer_used=layer_used)
 
     tvars = tf.trainable_variables()
 
@@ -1173,7 +1180,8 @@ def main(_):
       num_train_steps=num_train_steps,
       num_warmup_steps=num_warmup_steps,
       use_tpu=FLAGS.use_tpu,
-      use_one_hot_embeddings=FLAGS.use_tpu)
+      use_one_hot_embeddings=FLAGS.use_tpu,
+      layer_used=FLAGS.layer_used)
 
   # If TPU is not available, this will fall back to normal Estimator on CPU
   # or GPU.
@@ -1185,6 +1193,7 @@ def main(_):
       predict_batch_size=FLAGS.predict_batch_size)
 
   if FLAGS.do_train:
+    start_time = time.time()
     # We write to a temporary file to avoid storing very large constant tensors
     # in memory.
     train_writer = FeatureWriter(
@@ -1213,8 +1222,10 @@ def main(_):
         is_training=True,
         drop_remainder=True)
     estimator.train(input_fn=train_input_fn, max_steps=num_train_steps)
+    print('training time used = {0}min'.format(int((time.time()-start_time)/60)))
 
   if FLAGS.do_predict:
+    start_time = time.time()
     eval_examples = read_squad_examples(
         input_file=FLAGS.predict_file, is_training=False)
 
@@ -1274,6 +1285,7 @@ def main(_):
                       FLAGS.n_best_size, FLAGS.max_answer_length,
                       FLAGS.do_lower_case, output_prediction_file,
                       output_nbest_file, output_null_log_odds_file)
+    print('predict time used = {0}min'.format(int((time.time()-start_time)/60)))
 
 
 if __name__ == "__main__":

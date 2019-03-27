@@ -3,7 +3,7 @@ python run_squad.py \
 --vocab_file=./data/pretrained_model/uncased_base/vocab.txt \
 --bert_config_file=./data/pretrained_model/uncased_base/bert_config.json \
 --init_checkpoint=./data/pretrained_model/uncased_base/bert_model.ckpt \
---do_train=True \
+--do_train=False \
 --train_file=./data/squad/train-v2.0.json \
 --do_predict=True \
 --predict_file=./data/squad/dev-v2.0.json \
@@ -15,25 +15,26 @@ python run_squad.py \
 --output_dir=./data/squad/output \
 --use_tpu=False \
 --version_2_with_negative=True \
---layer_used = -1
-python ./data/squad/evaluate-v2.0.py './data/squad/dev-v2.0.json' './data/squad/output/predictions.json' \
---na-prob-file ./data/squad/output/null_odds.json
+--layer_used=-1
+# python ./data/squad/evaluate-v2.0.py './data/squad/dev-v2.0.json' './data/squad/output/predictions.json' \
+# --na-prob-file ./data/squad/output/null_odds.json
 
-# original setting:
+# use model.get_all_encoder_layers()[-1]
 # {
-#   "exact": 71.9952834161543,
-#   "f1": 75.63946351369651,
+#   "exact": 72.71119346416239,
+#   "f1": 75.90823049017881,
 #   "total": 11873,
-#   "HasAns_exact": 71.49122807017544,
-#   "HasAns_f1": 78.79003884921,
+#   "HasAns_exact": 72.35155195681511,
+#   "HasAns_f1": 78.75479429991447,
 #   "HasAns_total": 5928,
-#   "NoAns_exact": 72.49789739276703,
-#   "NoAns_f1": 72.49789739276703,
-#   "NoAns_total": 5945
-#   "best_exact": 72.83753053145793,
-#   "best_exact_thresh": -5.559882640838623,
-#   "best_f1": 76.10335982008996,
-#   "best_f1_thresh": -4.95320200920105
+#   "NoAns_exact": 73.06980656013457,
+#   "NoAns_f1": 73.06980656013457,
+#   "NoAns_total": 5945,
+#   "best_exact": 73.57870799292512,
+#   "best_exact_thresh": -2.757696747779846,
+#   "best_f1": 76.40278473556499,
+#   "best_f1_thresh": -1.3150174617767334
 # }
+
 
 # use model.get_all_encoder_layers()[-6]

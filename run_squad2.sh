@@ -3,7 +3,7 @@ python run_squad.py \
 --vocab_file=./data/pretrained_model/uncased_base/vocab.txt \
 --bert_config_file=./data/pretrained_model/uncased_base/bert_config.json \
 --init_checkpoint=./data/pretrained_model/uncased_base/bert_model.ckpt \
---do_train=False \
+--do_train=True \
 --train_file=./data/squad/train-v2.0.json \
 --do_predict=True \
 --predict_file=./data/squad/dev-v2.0.json \
@@ -12,11 +12,88 @@ python run_squad.py \
 --num_train_epochs=2.0 \
 --max_seq_length=300 \
 --doc_stride=128 \
---output_dir=./data/squad/output \
+--output_dir=./data/squad/output_layer-1 \
 --version_2_with_negative=True \
 --layer_used=-1 \
 --max_answer_length=20 \
---null_score_diff_threshold=-1.315
+--null_score_diff_threshold=0.0
+
+python run_squad.py \
+--vocab_file=./data/pretrained_model/uncased_base/vocab.txt \
+--bert_config_file=./data/pretrained_model/uncased_base/bert_config.json \
+--init_checkpoint=./data/pretrained_model/uncased_base/bert_model.ckpt \
+--do_train=True \
+--train_file=./data/squad/train-v2.0.json \
+--do_predict=True \
+--predict_file=./data/squad/dev-v2.0.json \
+--train_batch_size=12 \
+--learning_rate=3e-5 \
+--num_train_epochs=2.0 \
+--max_seq_length=300 \
+--doc_stride=128 \
+--output_dir=./data/squad/output_layer-4 \
+--version_2_with_negative=True \
+--layer_used=-4 \
+--max_answer_length=20 \
+--null_score_diff_threshold=0.0
+
+python run_squad.py \
+--vocab_file=./data/pretrained_model/uncased_base/vocab.txt \
+--bert_config_file=./data/pretrained_model/uncased_base/bert_config.json \
+--init_checkpoint=./data/pretrained_model/uncased_base/bert_model.ckpt \
+--do_train=True \
+--train_file=./data/squad/train-v2.0.json \
+--do_predict=True \
+--predict_file=./data/squad/dev-v2.0.json \
+--train_batch_size=12 \
+--learning_rate=3e-5 \
+--num_train_epochs=2.0 \
+--max_seq_length=300 \
+--doc_stride=128 \
+--output_dir=./data/squad/output_layer-6 \
+--version_2_with_negative=True \
+--layer_used=-6 \
+--max_answer_length=20 \
+--null_score_diff_threshold=0.0
+
+python run_squad.py \
+--vocab_file=./data/pretrained_model/uncased_base/vocab.txt \
+--bert_config_file=./data/pretrained_model/uncased_base/bert_config.json \
+--init_checkpoint=./data/pretrained_model/uncased_base/bert_model.ckpt \
+--do_train=True \
+--train_file=./data/squad/train-v2.0.json \
+--do_predict=True \
+--predict_file=./data/squad/dev-v2.0.json \
+--train_batch_size=12 \
+--learning_rate=3e-5 \
+--num_train_epochs=2.0 \
+--max_seq_length=300 \
+--doc_stride=128 \
+--output_dir=./data/squad/output_layer-8 \
+--version_2_with_negative=True \
+--layer_used=-8 \
+--max_answer_length=20 \
+--null_score_diff_threshold=0.0
+
+python run_squad.py \
+--vocab_file=./data/pretrained_model/uncased_base/vocab.txt \
+--bert_config_file=./data/pretrained_model/uncased_base/bert_config.json \
+--init_checkpoint=./data/pretrained_model/uncased_base/bert_model.ckpt \
+--do_train=True \
+--train_file=./data/squad/train-v2.0.json \
+--do_predict=True \
+--predict_file=./data/squad/dev-v2.0.json \
+--train_batch_size=12 \
+--learning_rate=3e-5 \
+--num_train_epochs=2.0 \
+--max_seq_length=300 \
+--doc_stride=128 \
+--output_dir=./data/squad/output_layer-10 \
+--version_2_with_negative=True \
+--layer_used=-10 \
+--max_answer_length=20 \
+--null_score_diff_threshold=0.0
+
 # python ./data/squad/evaluate-v2.0.py './data/squad/dev-v2.0.json' './data/squad/output/predictions.json' \
 # --na-prob-file ./data/squad/output/null_odds.json
 
@@ -38,4 +115,4 @@ python run_squad.py \
 # }
 
 
-# use model.get_all_encoder_layers()[-6]
+# use model.get_all_encoder_layers()[-3]

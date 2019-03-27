@@ -1222,7 +1222,9 @@ def main(_):
         is_training=True,
         drop_remainder=True)
     estimator.train(input_fn=train_input_fn, max_steps=num_train_steps)
-    print('training time used = {0}min'.format(int((time.time()-start_time)/60)))
+    time_file = FLAGS.output_dir+'/training_time.txt'
+    with open(time_file, 'w', encoding='utf-8') as f:
+        f.write('training time used = {0}min'.format(int((time.time()-start_time)/60)))
 
   if FLAGS.do_predict:
     start_time = time.time()
@@ -1285,7 +1287,9 @@ def main(_):
                       FLAGS.n_best_size, FLAGS.max_answer_length,
                       FLAGS.do_lower_case, output_prediction_file,
                       output_nbest_file, output_null_log_odds_file)
-    print('predict time used = {0}min'.format(int((time.time()-start_time)/60)))
+    time_file = FLAGS.output_dir + '/training_time.txt'
+    with open(time_file, 'a', encoding='utf-8') as f:
+        f.write('predict time used = {0}min'.format(int((time.time()-start_time)/60)))
 
 
 if __name__ == "__main__":

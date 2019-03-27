@@ -1224,7 +1224,7 @@ def main(_):
     estimator.train(input_fn=train_input_fn, max_steps=num_train_steps)
     time_file = FLAGS.output_dir+'/training_time.txt'
     with open(time_file, 'w', encoding='utf-8') as f:
-        f.write('training time used = {0}min'.format(int((time.time()-start_time)/60)))
+        f.write('training time used = {0}min'.format(int((time.time()-start_time)/60))+'\n')
 
   if FLAGS.do_predict:
     start_time = time.time()
@@ -1289,7 +1289,7 @@ def main(_):
                       output_nbest_file, output_null_log_odds_file)
     time_file = FLAGS.output_dir + '/training_time.txt'
     with open(time_file, 'a', encoding='utf-8') as f:
-        f.write('predict time used = {0}min'.format(int((time.time()-start_time)/60)))
+        f.write('predict time used = {0}min'.format(int((time.time()-start_time)/60))+'\n')
 
 
 if __name__ == "__main__":

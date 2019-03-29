@@ -7,12 +7,12 @@ python run_squad.py \
 --train_file=./data/squad/train-v2.0.json \
 --do_predict=True \
 --predict_file=./data/squad/dev-v2.0.json \
---train_batch_size=12 \
---learning_rate=3e-5 \
---num_train_epochs=2.0 \
+--train_batch_size=16 \
+--learning_rate=5e-5 \
+--num_train_epochs=3.0 \
 --max_seq_length=300 \
 --doc_stride=128 \
---output_dir=./data/squad/output_layer-1-2 \
+--output_dir=./data/squad/output_layer-1 \
 --version_2_with_negative=True \
 --layer_used=-1 \
 --max_answer_length=20 \

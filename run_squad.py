@@ -567,7 +567,8 @@ def create_model(bert_config, is_training, input_ids, input_mask, segment_ids,
       use_one_hot_embeddings=use_one_hot_embeddings)
 
   # final_hidden = model.get_sequence_output()
-  final_hidden = tf.concat([model.get_all_encoder_layers()[-1], model.get_all_encoder_layers()[-2]], -1)
+  final_hidden = model.get_all_encoder_layers()[layer_used]
+  # final_hidden = tf.concat([model.get_all_encoder_layers()[-1], model.get_all_encoder_layers()[-2]], -1)
 
   final_hidden_shape = modeling.get_shape_list(final_hidden, expected_rank=3)
   batch_size = final_hidden_shape[0]

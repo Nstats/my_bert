@@ -15,6 +15,23 @@ python ./data/squad/evaluate-v2.0.py './data/squad/dev-v2.0.json' './data/squad/
 --na-prob-file ./data/squad/output_layer-10/null_odds.json
 
 :<<annotation
+sorted by best f1 score:
+{
+  "output_layer": -1-2
+  "exact": 73.42710351217048,
+  "f1": 76.48971752293548,
+  "total": 11873,
+  "HasAns_exact": 71.12010796221323,
+  "HasAns_f1": 77.25411878370659,
+  "HasAns_total": 5928,
+  "NoAns_exact": 75.72750210260723,
+  "NoAns_f1": 75.72750210260723,
+  "NoAns_total": 5945,
+  "best_exact": 73.48606081024172,
+  "best_exact_thresh": 0.8595569133758545,
+  "best_f1": 76.54867482100651,
+  "best_f1_thresh": 0.8595569133758545
+}
 {
   "output_layer": -1,
   "exact": 72.66908110839721,

@@ -36,7 +36,7 @@ FLAGS = flags.FLAGS
 
 ## Required parameters
 flags.DEFINE_string(
-    "pretrained_embed_dir", './data/squad/word2vec_embd.txt',
+    "pretrained_embed_dir", './data/squad/word2vec_embed.txt',
     "the dir of pretrained word embeddings.")
 
 flags.DEFINE_string(

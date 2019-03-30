@@ -423,14 +423,12 @@ def embedding_lookup(input_ids,
     embedding_table_value = np.loadtxt(pretrained_embed_dir, np.float32, encoding='utf-8')
     embedding_table = tf.get_variable(
         name=word_embedding_name,
-        initializer=embedding_table_value,
-        trainable=True)
+        initializer=embedding_table_value)
   else:
     embedding_table = tf.get_variable(
         name=word_embedding_name,
         shape=[vocab_size, embedding_size],
-        initializer=create_initializer(initializer_range),
-        trainable=True)
+        initializer=create_initializer(initializer_range))
 
   if use_one_hot_embeddings:
     flat_input_ids = tf.reshape(input_ids, [-1])

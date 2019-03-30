@@ -7,7 +7,7 @@ import json
 
 
 size = 768
-train_dir = './data/squad/dev-v2.0.json'
+train_dir = './data/squad/train-v2.0.json'
 vocab_dir = './data/pretrained_model/uncased_base/vocab.txt'
 output_dir = './data/squad/word2vec_embed.txt'
 

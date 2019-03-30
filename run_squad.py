@@ -36,6 +36,10 @@ FLAGS = flags.FLAGS
 
 ## Required parameters
 flags.DEFINE_string(
+    "pretrained_embed_dir", './data/squad/word2vec_embd.txt',
+    "the dir of pretrained word embeddings.")
+
+flags.DEFINE_string(
     "bert_config_file", './data/pretrained_model/uncased_base/bert_config.json',
     "The config json file corresponding to the pre-trained BERT model. "
     "This specifies the model architecture.")
@@ -558,7 +562,7 @@ def _check_is_max_context(doc_spans, cur_span_index, position):
 
 
 def create_model(bert_config, is_training, input_ids, input_mask, segment_ids,
-                 use_one_hot_embeddings, layer_used, use_pretrained_embed):
+                 use_one_hot_embeddings, layer_used, use_pretrained_embed, pretrained_embed_dir):
   """Creates a classification model."""
   model = modeling.BertModel(
       config=bert_config,
@@ -567,7 +571,8 @@ def create_model(bert_config, is_training, input_ids, input_mask, segment_ids,
       input_mask=input_mask,
       token_type_ids=segment_ids,
       use_one_hot_embeddings=use_one_hot_embeddings,
-      use_pretrained_embed=use_pretrained_embed)
+      use_pretrained_embed=use_pretrained_embed,
+      pretrained_embed_dir=pretrained_embed_dir)
 
   # final_hidden = model.get_sequence_output()
   final_hidden = model.get_all_encoder_layers()[layer_used]
@@ -602,7 +607,7 @@ def create_model(bert_config, is_training, input_ids, input_mask, segment_ids,
 
 def model_fn_builder(bert_config, init_checkpoint, learning_rate,
                      num_train_steps, num_warmup_steps, use_tpu,
-                     use_one_hot_embeddings, layer_used, use_pretrained_embed):
+                     use_one_hot_embeddings, layer_used, use_pretrained_embed, pretrained_embed_dir):
   """Returns `model_fn` closure for TPUEstimator."""
 
   def model_fn(features, labels, mode, params):  # pylint: disable=unused-argument
@@ -627,7 +632,8 @@ def model_fn_builder(bert_config, init_checkpoint, learning_rate,
         segment_ids=segment_ids,
         use_one_hot_embeddings=use_one_hot_embeddings,
         layer_used=layer_used,
-        use_pretrained_embed=use_pretrained_embed)
+        use_pretrained_embed=use_pretrained_embed,
+        pretrained_embed_dir=pretrained_embed_dir)
 
     tvars = tf.trainable_variables()
 
@@ -1187,7 +1193,8 @@ def main(_):
       use_tpu=FLAGS.use_tpu,
       use_one_hot_embeddings=FLAGS.use_tpu,
       layer_used=FLAGS.layer_used,
-      use_pretrained_embed=FLAGS.use_pretrained_embed)
+      use_pretrained_embed=FLAGS.use_pretrained_embed,
+      pretrained_embed_dir=FLAGS.pretrained_embed_dir)
 
   # If TPU is not available, this will fall back to normal Estimator on CPU
   # or GPU.

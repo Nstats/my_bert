@@ -136,7 +136,8 @@ class BertModel(object):
                token_type_ids=None,
                use_one_hot_embeddings=False,
                scope=None,
-               use_pretrained_embed=False):
+               use_pretrained_embed=False,
+               pretrained_embed_dir=None):
     """Constructor for BertModel.
 
     Args:
@@ -182,7 +183,8 @@ class BertModel(object):
             initializer_range=config.initializer_range,
             word_embedding_name="word_embeddings",
             use_one_hot_embeddings=use_one_hot_embeddings,
-            use_pretrained_embed=use_pretrained_embed)
+            use_pretrained_embed=use_pretrained_embed,
+            pretrained_embed_dir=pretrained_embed_dir)
 
         # Add positional embeddings and token type embeddings, then layer
         # normalize and perform dropout.
@@ -389,7 +391,8 @@ def embedding_lookup(input_ids,
                      initializer_range=0.02,
                      word_embedding_name="word_embeddings",
                      use_one_hot_embeddings=False,
-                     use_pretrained_embed=False):
+                     use_pretrained_embed=False,
+                     pretrained_embed_dir=None):
   """Looks up words embeddings for id tensor.
 
   Args:
@@ -402,6 +405,8 @@ def embedding_lookup(input_ids,
     use_one_hot_embeddings: bool. If True, use one-hot method for word
       embeddings. If False, use `tf.nn.embedding_lookup()`. One hot is better
       for TPUs.
+    use_pretrained_embed: use pretrained word embedding or not.
+    pretrained_embed_dir: the dir of pretrained word embeddings.
 
   Returns:
     float Tensor of shape [batch_size, seq_length, embedding_size].

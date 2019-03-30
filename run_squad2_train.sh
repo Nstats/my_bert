@@ -16,7 +16,8 @@ python run_squad.py \
 --version_2_with_negative=True \
 --layer_used=-1 \
 --max_answer_length=20 \
---null_score_diff_threshold=0.0
+--null_score_diff_threshold=0.0 \
+--use_pretrained_embed=True
 
 :<<annotation
 python run_squad.py \

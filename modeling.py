@@ -25,6 +25,7 @@ import math
 import re
 import six
 import tensorflow as tf
+import numpy as np
 
 
 class BertConfig(object):
@@ -414,16 +415,17 @@ def embedding_lookup(input_ids,
     input_ids = tf.expand_dims(input_ids, axis=[-1])
 
   if use_pretrained_embed:
-    embedding_table_value = tf.constant()
+    embedding_table_value = np.loadtxt(pretrained_embed_dir, np.float32, encoding='utf-8')
     embedding_table = tf.get_variable(
         name=word_embedding_name,
-        shape=[vocab_size, embedding_size],
-        initializer=create_initializer(initializer_range))
+        initializer=embedding_table_value,
+        trainable=True)
   else:
     embedding_table = tf.get_variable(
         name=word_embedding_name,
         shape=[vocab_size, embedding_size],
-        initializer=create_initializer(initializer_range))
+        initializer=create_initializer(initializer_range),
+        trainable=True)
 
   if use_one_hot_embeddings:
     flat_input_ids = tf.reshape(input_ids, [-1])

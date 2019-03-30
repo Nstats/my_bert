@@ -423,7 +423,8 @@ def embedding_lookup(input_ids,
     embedding_table_value = np.loadtxt(pretrained_embed_dir, np.float32, encoding='utf-8')
     embedding_table = tf.get_variable(
         name=word_embedding_name,
-        initializer=embedding_table_value)
+        initializer=embedding_table_value,
+        trainable=True)
   else:
     embedding_table = tf.get_variable(
         name=word_embedding_name,

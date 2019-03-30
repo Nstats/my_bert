@@ -12,7 +12,7 @@ python run_squad.py \
 --num_train_epochs=3.0 \
 --max_seq_length=290 \
 --doc_stride=128 \
---output_dir=./data/squad/embed+layer-1 \
+--output_dir=./data/squad/trainable_embed+layer-1 \
 --version_2_with_negative=True \
 --layer_used=-1 \
 --max_answer_length=20 \

@@ -17,6 +17,22 @@ python ./data/squad/evaluate-v2.0.py './data/squad/dev-v2.0.json' './data/squad/
 :<<annotation
 sorted by best f1 score:
 {
+  "output_layer": -1,
+  "exact": 73.66293270445549,
+  "f1": 77.1959730316822,
+  "total": 11873,
+  "HasAns_exact": 73.19500674763833,
+  "HasAns_f1": 80.2712192653783,
+  "HasAns_total": 5928,
+  "NoAns_exact": 74.12952060555088,
+  "NoAns_f1": 74.12952060555088,
+  "NoAns_total": 5945,
+  "best_exact": 74.83365619472754,
+  "best_exact_thresh": -4.278260707855225,
+  "best_f1": 77.92894528272473,
+  "best_f1_thresh": -4.278260707855225
+}
+{
   "output_layer": -1-2
   "exact": 73.42710351217048,
   "f1": 76.48971752293548,
@@ -79,37 +95,5 @@ sorted by best f1 score:
   "best_exact_thresh": -1.950791358947754,
   "best_f1": 70.64116923238029,
   "best_f1_thresh": -1.8559441566467285
-}
-{
-  "output_layer": -8,
-  "exact": 62.368398888233806,
-  "f1": 66.0636406943197,
-  "total": 11873,
-  "HasAns_exact": 60.931174089068826,
-  "HasAns_f1": 68.33225471721605,
-  "HasAns_total": 5928,
-  "NoAns_exact": 63.80151387720774,
-  "NoAns_f1": 63.80151387720774,
-  "NoAns_total": 5945,
-  "best_exact": 64.65088857070664,
-  "best_exact_thresh": -2.3864502906799316,
-  "best_f1": 67.67790869856657,
-  "best_f1_thresh": -2.3864502906799316
-}
-{
-  "output_layer": -10,
-  "exact": 54.29967152362503,
-  "f1": 58.10989359401025,
-  "total": 11873,
-  "HasAns_exact": 44.97300944669366,
-  "HasAns_f1": 52.60438033766564,
-  "HasAns_total": 5928,
-  "NoAns_exact": 63.59966358284272,
-  "NoAns_f1": 63.59966358284272,
-  "NoAns_total": 5945,
-  "best_exact": 56.55689379263876,
-  "best_exact_thresh": -2.2276716232299805,
-  "best_f1": 58.93353215918612,
-  "best_f1_thresh": -2.184985637664795
 }
 annotation

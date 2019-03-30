@@ -134,7 +134,8 @@ class BertModel(object):
                input_mask=None,
                token_type_ids=None,
                use_one_hot_embeddings=False,
-               scope=None):
+               scope=None,
+               use_pretrained_embed=False):
     """Constructor for BertModel.
 
     Args:
@@ -149,6 +150,7 @@ class BertModel(object):
         it is must faster if this is True, on the CPU or GPU, it is faster if
         this is False.
       scope: (optional) variable scope. Defaults to "bert".
+      use_pretrained_embed: use pretained word embedding or not.
 
     Raises:
       ValueError: The config is invalid or one of the input tensor shapes
@@ -178,7 +180,8 @@ class BertModel(object):
             embedding_size=config.hidden_size,
             initializer_range=config.initializer_range,
             word_embedding_name="word_embeddings",
-            use_one_hot_embeddings=use_one_hot_embeddings)
+            use_one_hot_embeddings=use_one_hot_embeddings,
+            use_pretrained_embed=use_pretrained_embed)
 
         # Add positional embeddings and token type embeddings, then layer
         # normalize and perform dropout.
@@ -384,7 +387,8 @@ def embedding_lookup(input_ids,
                      embedding_size=128,
                      initializer_range=0.02,
                      word_embedding_name="word_embeddings",
-                     use_one_hot_embeddings=False):
+                     use_one_hot_embeddings=False,
+                     use_pretrained_embed=False):
   """Looks up words embeddings for id tensor.
 
   Args:
@@ -409,10 +413,17 @@ def embedding_lookup(input_ids,
   if input_ids.shape.ndims == 2:
     input_ids = tf.expand_dims(input_ids, axis=[-1])
 
-  embedding_table = tf.get_variable(
-      name=word_embedding_name,
-      shape=[vocab_size, embedding_size],
-      initializer=create_initializer(initializer_range))
+  if use_pretrained_embed:
+    embedding_table_value = tf.constant()
+    embedding_table = tf.get_variable(
+        name=word_embedding_name,
+        shape=[vocab_size, embedding_size],
+        initializer=create_initializer(initializer_range))
+  else:
+    embedding_table = tf.get_variable(
+        name=word_embedding_name,
+        shape=[vocab_size, embedding_size],
+        initializer=create_initializer(initializer_range))
 
   if use_one_hot_embeddings:
     flat_input_ids = tf.reshape(input_ids, [-1])

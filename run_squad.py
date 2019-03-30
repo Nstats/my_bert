@@ -85,6 +85,8 @@ flags.DEFINE_integer(
     "layer used in BERT model. self.sequence_output = self.all_encoder_layers[-1]"
     "It's limited by bert_config.num_hidden_layers")
 
+flags.DEFINE_bool('use_pretrained_embed', False, 'whether to use pretrained initial word embeddings')
+
 flags.DEFINE_bool("do_train", True, "Whether to run training.")
 
 flags.DEFINE_bool("do_predict", True, "Whether to run eval on the dev set.")
@@ -556,7 +558,7 @@ def _check_is_max_context(doc_spans, cur_span_index, position):
 
 
 def create_model(bert_config, is_training, input_ids, input_mask, segment_ids,
-                 use_one_hot_embeddings, layer_used):
+                 use_one_hot_embeddings, layer_used, use_pretrained_embed):
   """Creates a classification model."""
   model = modeling.BertModel(
       config=bert_config,
@@ -564,7 +566,8 @@ def create_model(bert_config, is_training, input_ids, input_mask, segment_ids,
       input_ids=input_ids,
       input_mask=input_mask,
       token_type_ids=segment_ids,
-      use_one_hot_embeddings=use_one_hot_embeddings)
+      use_one_hot_embeddings=use_one_hot_embeddings,
+      use_pretrained_embed=use_pretrained_embed)
 
   # final_hidden = model.get_sequence_output()
   final_hidden = model.get_all_encoder_layers()[layer_used]
@@ -599,7 +602,7 @@ def create_model(bert_config, is_training, input_ids, input_mask, segment_ids,
 
 def model_fn_builder(bert_config, init_checkpoint, learning_rate,
                      num_train_steps, num_warmup_steps, use_tpu,
-                     use_one_hot_embeddings, layer_used):
+                     use_one_hot_embeddings, layer_used, use_pretrained_embed):
   """Returns `model_fn` closure for TPUEstimator."""
 
   def model_fn(features, labels, mode, params):  # pylint: disable=unused-argument
@@ -623,7 +626,8 @@ def model_fn_builder(bert_config, init_checkpoint, learning_rate,
         input_mask=input_mask,
         segment_ids=segment_ids,
         use_one_hot_embeddings=use_one_hot_embeddings,
-        layer_used=layer_used)
+        layer_used=layer_used,
+        use_pretrained_embed=use_pretrained_embed)
 
     tvars = tf.trainable_variables()
 
@@ -1182,7 +1186,8 @@ def main(_):
       num_warmup_steps=num_warmup_steps,
       use_tpu=FLAGS.use_tpu,
       use_one_hot_embeddings=FLAGS.use_tpu,
-      layer_used=FLAGS.layer_used)
+      layer_used=FLAGS.layer_used,
+      use_pretrained_embed=FLAGS.use_pretrained_embed)
 
   # If TPU is not available, this will fall back to normal Estimator on CPU
   # or GPU.

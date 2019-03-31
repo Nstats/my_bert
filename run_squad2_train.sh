@@ -4,7 +4,7 @@ python run_squad.py \
 --bert_config_file=./data/pretrained_model/uncased_base/bert_config.json \
 --init_checkpoint=./data/pretrained_model/uncased_base/bert_model.ckpt \
 --do_train=True \
---train_file=./data/squad/dev-v2.0.json \
+--train_file=./data/squad/train-v2.0.json \
 --do_predict=True \
 --predict_file=./data/squad/dev-v2.0.json \
 --train_batch_size=16 \

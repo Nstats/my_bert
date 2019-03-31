@@ -424,7 +424,7 @@ def embedding_lookup(input_ids,
     embedding_table = tf.get_variable(
         name=word_embedding_name,
         initializer=embedding_table_value,
-        trainable=False)
+        trainable=True)
   else:
     embedding_table = tf.get_variable(
         name=word_embedding_name,

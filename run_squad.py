@@ -1285,9 +1285,9 @@ def main(_):
                         start_logits=start_logits,
                         end_logits=end_logits))
 
-            output_prediction_file = os.path.join(FLAGS.output_dir + '/pred_file', str(i) + "predictions.json")
-            output_nbest_file = os.path.join(FLAGS.output_dir + '/pred_file', str(i) + "nbest_predictions.json")
-            output_null_log_odds_file = os.path.join(FLAGS.output_dir + '/pred_file', str(i) + "null_odds.json")
+            output_prediction_file = os.path.join(FLAGS.output_dir, str(i)+"_predictions.json")
+            output_nbest_file = os.path.join(FLAGS.output_dir, str(i)+"_nbest_predictions.json")
+            output_null_log_odds_file = os.path.join(FLAGS.output_dir, str(i)+"_null_odds.json")
 
             write_predictions(eval_examples, eval_features, all_results,
                               FLAGS.n_best_size, FLAGS.max_answer_length,

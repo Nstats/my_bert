@@ -12,12 +12,12 @@ python run_squad.py \
 --num_train_epochs=3.0 \
 --max_seq_length=290 \
 --doc_stride=128 \
---output_dir=./data/squad/untrainable_embed+layer-1 \
+--output_dir=./data/squad/layer-1 \
 --version_2_with_negative=True \
 --max_answer_length=20 \
 --null_score_diff_threshold=0.0 \
 --layer_used=-1 \
---use_pretrained_embed=True \
+--use_pretrained_embed=False \
 --num_eval_pred=20
 
 :<<annotation

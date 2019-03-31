@@ -8,7 +8,7 @@ python run_squad.py \
 --do_predict=True \
 --predict_file=./data/squad/dev-v2.0.json \
 --train_batch_size=16 \
---learning_rate=5e-5 \
+--learning_rate=3e-5 \
 --num_train_epochs=4.0 \
 --max_seq_length=290 \
 --doc_stride=128 \

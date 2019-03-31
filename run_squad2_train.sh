@@ -14,9 +14,9 @@ python run_squad.py \
 --doc_stride=128 \
 --output_dir=./data/squad/untrainable_embed+layer-1 \
 --version_2_with_negative=True \
---layer_used=-1 \
 --max_answer_length=20 \
 --null_score_diff_threshold=0.0 \
+--layer_used=-1 \
 --use_pretrained_embed=True \
 --num_eval_pred=20
 

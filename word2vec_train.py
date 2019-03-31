@@ -16,10 +16,12 @@ tokenizer = tokenization.FullTokenizer(vocab_file=vocab_dir, do_lower_case=True)
 with tf.gfile.Open(train_dir, "r") as reader:
     input_data = json.load(reader)["data"]
 
+
 def is_whitespace(c):
     if c == " " or c == "\t" or c == "\r" or c == "\n" or ord(c) == 0x202F:
         return True
     return False
+
 
 examples = []
 for entry in input_data:

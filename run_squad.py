@@ -69,6 +69,10 @@ flags.DEFINE_bool(
     "models and False for cased models.")
 
 flags.DEFINE_integer(
+    "num_eval_pred", 20,
+    "The num of evaluation set prediction times.")
+
+flags.DEFINE_integer(
     "max_seq_length", 384,
     "The maximum total input sequence length after WordPiece tokenization. "
     "Sequences longer than this will be truncated, and sequences shorter "
@@ -1205,6 +1209,34 @@ def main(_):
       train_batch_size=FLAGS.train_batch_size,
       predict_batch_size=FLAGS.predict_batch_size)
 
+  eval_examples = read_squad_examples(
+      input_file=FLAGS.predict_file, is_training=False)
+
+  eval_writer = FeatureWriter(
+      filename=os.path.join(FLAGS.output_dir, "eval.tf_record"),
+      is_training=False)
+  eval_features = []
+
+  def append_feature(feature):
+      eval_features.append(feature)
+      eval_writer.process_feature(feature)
+
+  convert_examples_to_features(
+      examples=eval_examples,
+      tokenizer=tokenizer,
+      max_seq_length=FLAGS.max_seq_length,
+      doc_stride=FLAGS.doc_stride,
+      max_query_length=FLAGS.max_query_length,
+      is_training=False,
+      output_fn=append_feature)
+  eval_writer.close()
+
+  predict_input_fn = input_fn_builder(
+      input_file=eval_writer.filename,
+      seq_length=FLAGS.max_seq_length,
+      is_training=False,
+      drop_remainder=False)
+
   if FLAGS.do_train:
     start_time = time.time()
     # We write to a temporary file to avoid storing very large constant tensors
@@ -1234,75 +1266,36 @@ def main(_):
         seq_length=FLAGS.max_seq_length,
         is_training=True,
         drop_remainder=True)
-    estimator.train(input_fn=train_input_fn, max_steps=num_train_steps)
+    num_eval_pred = FLAGS.num_eval_pred
+    steps = int(0.5*num_train_steps/num_eval_pred)
+    estimator.train(input_fn=train_input_fn, steps=int(0.5*num_train_steps))
+    for i in range(num_eval_pred):
+        estimator.train(input_fn=train_input_fn, steps=steps)
+        if FLAGS.do_predict:
+            all_results = []
+            for result in estimator.predict(predict_input_fn, yield_single_examples=True):
+                if len(all_results) % 1000 == 0:
+                    tf.logging.info("Processing example: %d" % (len(all_results)))
+                unique_id = int(result["unique_ids"])
+                start_logits = [float(x) for x in result["start_logits"].flat]
+                end_logits = [float(x) for x in result["end_logits"].flat]
+                all_results.append(
+                    RawResult(
+                        unique_id=unique_id,
+                        start_logits=start_logits,
+                        end_logits=end_logits))
+
+            output_prediction_file = os.path.join(FLAGS.output_dir + '/pred_file', str(i) + "predictions.json")
+            output_nbest_file = os.path.join(FLAGS.output_dir + '/pred_file', str(i) + "nbest_predictions.json")
+            output_null_log_odds_file = os.path.join(FLAGS.output_dir + '/pred_file', str(i) + "null_odds.json")
+
+            write_predictions(eval_examples, eval_features, all_results,
+                              FLAGS.n_best_size, FLAGS.max_answer_length,
+                              FLAGS.do_lower_case, output_prediction_file,
+                              output_nbest_file, output_null_log_odds_file)
     time_file = FLAGS.output_dir+'/training_time.txt'
     with open(time_file, 'w', encoding='utf-8') as f:
         f.write('training time used = {0}min'.format(int((time.time()-start_time)/60))+'\n')
-
-  if FLAGS.do_predict:
-    start_time = time.time()
-    eval_examples = read_squad_examples(
-        input_file=FLAGS.predict_file, is_training=False)
-
-    eval_writer = FeatureWriter(
-        filename=os.path.join(FLAGS.output_dir, "eval.tf_record"),
-        is_training=False)
-    eval_features = []
-
-    def append_feature(feature):
-      eval_features.append(feature)
-      eval_writer.process_feature(feature)
-
-    convert_examples_to_features(
-        examples=eval_examples,
-        tokenizer=tokenizer,
-        max_seq_length=FLAGS.max_seq_length,
-        doc_stride=FLAGS.doc_stride,
-        max_query_length=FLAGS.max_query_length,
-        is_training=False,
-        output_fn=append_feature)
-    eval_writer.close()
-
-    tf.logging.info("***** Running predictions *****")
-    tf.logging.info("  Num orig examples = %d", len(eval_examples))
-    tf.logging.info("  Num split examples = %d", len(eval_features))
-    tf.logging.info("  Batch size = %d", FLAGS.predict_batch_size)
-
-    all_results = []
-
-    predict_input_fn = input_fn_builder(
-        input_file=eval_writer.filename,
-        seq_length=FLAGS.max_seq_length,
-        is_training=False,
-        drop_remainder=False)
-
-    # If running eval on the TPU, you will need to specify the number of
-    # steps.
-    all_results = []
-    for result in estimator.predict(
-        predict_input_fn, yield_single_examples=True):
-      if len(all_results) % 1000 == 0:
-        tf.logging.info("Processing example: %d" % (len(all_results)))
-      unique_id = int(result["unique_ids"])
-      start_logits = [float(x) for x in result["start_logits"].flat]
-      end_logits = [float(x) for x in result["end_logits"].flat]
-      all_results.append(
-          RawResult(
-              unique_id=unique_id,
-              start_logits=start_logits,
-              end_logits=end_logits))
-
-    output_prediction_file = os.path.join(FLAGS.output_dir, "predictions.json")
-    output_nbest_file = os.path.join(FLAGS.output_dir, "nbest_predictions.json")
-    output_null_log_odds_file = os.path.join(FLAGS.output_dir, "null_odds.json")
-
-    write_predictions(eval_examples, eval_features, all_results,
-                      FLAGS.n_best_size, FLAGS.max_answer_length,
-                      FLAGS.do_lower_case, output_prediction_file,
-                      output_nbest_file, output_null_log_odds_file)
-    time_file = FLAGS.output_dir + '/training_time.txt'
-    with open(time_file, 'a', encoding='utf-8') as f:
-        f.write('predict time used = {0}min'.format(int((time.time()-start_time)/60))+'\n')
 
 
 if __name__ == "__main__":

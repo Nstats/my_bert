@@ -18,7 +18,8 @@ python run_squad.py \
 --null_score_diff_threshold=0.0 \
 --layer_used=-1 \
 --use_pretrained_embed=False \
---num_eval_pred=20
+--num_eval_pred=20 \
+--ckpt_saved_times=5
 
 :<<annotation
 annotation

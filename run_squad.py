@@ -123,7 +123,7 @@ flags.DEFINE_integer("iterations_per_loop", 1000,
                      "How many steps to make in each estimator call.")
 
 flags.DEFINE_integer(
-    "n_best_size", 20,
+    "n_best_size", 5,
     "The total number of n-best predictions to generate in the "
     "nbest_predictions.json output file.")
 

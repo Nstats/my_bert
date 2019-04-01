@@ -1,18 +1,64 @@
 #!/usr/bin/env bash
-python ./data/squad/evaluate-v2.0.py './data/squad/dev-v2.0.json' './data/squad/output_layer-1/predictions.json' \
---na-prob-file ./data/squad/output_layer-1/null_odds.json
 
-python ./data/squad/evaluate-v2.0.py './data/squad/dev-v2.0.json' './data/squad/output_layer-4/predictions.json' \
---na-prob-file ./data/squad/output_layer-4/null_odds.json
+python ./data/squad/evaluate-v2.0.py './data/squad/dev-v2.0.json' './data/squad/layer-1/0_predictions.json' \
+--na-prob-file './data/squad/layer-1/0_null_odds.json'
 
-python ./data/squad/evaluate-v2.0.py './data/squad/dev-v2.0.json' './data/squad/output_layer-6/predictions.json' \
---na-prob-file ./data/squad/output_layer-6/null_odds.json
+python ./data/squad/evaluate-v2.0.py './data/squad/dev-v2.0.json' './data/squad/layer-1/1_predictions.json' \
+--na-prob-file './data/squad/layer-1/1_null_odds.json'
 
-python ./data/squad/evaluate-v2.0.py './data/squad/dev-v2.0.json' './data/squad/output_layer-8/predictions.json' \
---na-prob-file ./data/squad/output_layer-8/null_odds.json
+python ./data/squad/evaluate-v2.0.py './data/squad/dev-v2.0.json' './data/squad/layer-1/2_predictions.json' \
+--na-prob-file './data/squad/layer-1/2_null_odds.json'
 
-python ./data/squad/evaluate-v2.0.py './data/squad/dev-v2.0.json' './data/squad/output_layer-10/predictions.json' \
---na-prob-file ./data/squad/output_layer-10/null_odds.json
+python ./data/squad/evaluate-v2.0.py './data/squad/dev-v2.0.json' './data/squad/layer-1/3_predictions.json' \
+--na-prob-file './data/squad/layer-1/3_null_odds.json'
+
+python ./data/squad/evaluate-v2.0.py './data/squad/dev-v2.0.json' './data/squad/layer-1/4_predictions.json' \
+--na-prob-file './data/squad/layer-1/4_null_odds.json'
+
+python ./data/squad/evaluate-v2.0.py './data/squad/dev-v2.0.json' './data/squad/layer-1/5_predictions.json' \
+--na-prob-file './data/squad/layer-1/5_null_odds.json'
+
+python ./data/squad/evaluate-v2.0.py './data/squad/dev-v2.0.json' './data/squad/layer-1/6_predictions.json' \
+--na-prob-file './data/squad/layer-1/6_null_odds.json'
+
+python ./data/squad/evaluate-v2.0.py './data/squad/dev-v2.0.json' './data/squad/layer-1/7_predictions.json' \
+--na-prob-file './data/squad/layer-1/7_null_odds.json'
+
+python ./data/squad/evaluate-v2.0.py './data/squad/dev-v2.0.json' './data/squad/layer-1/8_predictions.json' \
+--na-prob-file './data/squad/layer-1/8_null_odds.json'
+
+python ./data/squad/evaluate-v2.0.py './data/squad/dev-v2.0.json' './data/squad/layer-1/9_predictions.json' \
+--na-prob-file './data/squad/layer-1/9_null_odds.json'
+
+python ./data/squad/evaluate-v2.0.py './data/squad/dev-v2.0.json' './data/squad/layer-1/10_predictions.json' \
+--na-prob-file './data/squad/layer-1/10_null_odds.json'
+
+python ./data/squad/evaluate-v2.0.py './data/squad/dev-v2.0.json' './data/squad/layer-1/11_predictions.json' \
+--na-prob-file './data/squad/layer-1/11_null_odds.json'
+
+python ./data/squad/evaluate-v2.0.py './data/squad/dev-v2.0.json' './data/squad/layer-1/12_predictions.json' \
+--na-prob-file './data/squad/layer-1/12_null_odds.json'
+
+python ./data/squad/evaluate-v2.0.py './data/squad/dev-v2.0.json' './data/squad/layer-1/13_predictions.json' \
+--na-prob-file './data/squad/layer-1/13_null_odds.json'
+
+python ./data/squad/evaluate-v2.0.py './data/squad/dev-v2.0.json' './data/squad/layer-1/14_predictions.json' \
+--na-prob-file './data/squad/layer-1/14_null_odds.json'
+
+python ./data/squad/evaluate-v2.0.py './data/squad/dev-v2.0.json' './data/squad/layer-1/15_predictions.json' \
+--na-prob-file './data/squad/layer-1/15_null_odds.json'
+
+python ./data/squad/evaluate-v2.0.py './data/squad/dev-v2.0.json' './data/squad/layer-1/16_predictions.json' \
+--na-prob-file './data/squad/layer-1/16_null_odds.json'
+
+python ./data/squad/evaluate-v2.0.py './data/squad/dev-v2.0.json' './data/squad/layer-1/17_predictions.json' \
+--na-prob-file './data/squad/layer-1/17_null_odds.json'
+
+python ./data/squad/evaluate-v2.0.py './data/squad/dev-v2.0.json' './data/squad/layer-1/18_predictions.json' \
+--na-prob-file './data/squad/layer-1/18_null_odds.json'
+
+python ./data/squad/evaluate-v2.0.py './data/squad/dev-v2.0.json' './data/squad/layer-1/19_predictions.json' \
+--na-prob-file './data/squad/layer-1/19_null_odds.json'
 
 :<<annotation
 sorted by best f1 score:

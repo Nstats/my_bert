@@ -69,10 +69,6 @@ flags.DEFINE_bool(
     "models and False for cased models.")
 
 flags.DEFINE_integer(
-    "num_eval_pred", 20,
-    "The num of evaluation set prediction times.")
-
-flags.DEFINE_integer(
     "max_seq_length", 384,
     "The maximum total input sequence length after WordPiece tokenization. "
     "Sequences longer than this will be truncated, and sequences shorter "
@@ -1212,7 +1208,7 @@ def main(_):
       train_batch_size=FLAGS.train_batch_size,
       predict_batch_size=FLAGS.predict_batch_size)
 
-  if FLAGS.do_train:
+  if not FLAGS.do_train:
     start_time = time.time()
     # We write to a temporary file to avoid storing very large constant tensors
     # in memory.
@@ -1241,12 +1237,14 @@ def main(_):
         seq_length=FLAGS.max_seq_length,
         is_training=True,
         drop_remainder=True)
+    # estimator.train(input_fn=train_input_fn, max_steps=10)
     estimator.train(input_fn=train_input_fn, max_steps=num_train_steps)
     time_file = FLAGS.output_dir+'/training_time.txt'
     with open(time_file, 'w', encoding='utf-8') as f:
         f.write('training time used = {0}min'.format(int((time.time()-start_time)/60))+'\n')
 
   if FLAGS.do_predict:
+    start_time = time.time()
     eval_examples = read_squad_examples(
         input_file=FLAGS.predict_file, is_training=False)
 
@@ -1280,10 +1278,11 @@ def main(_):
     for i in range(FLAGS.ckpt_saved_times-1):
         ckpt_step_list.append(ckpt_step-FLAGS.save_checkpoints_steps*i)
     ckpt_step_list.reverse()
+    print('ckpt_step_list = ', ckpt_step_list)
 
     for item in ckpt_step_list:
         all_results = []
-        checkpoint_path = FLAGS.output_dir+'model.ckpt-'+str(item)
+        checkpoint_path = FLAGS.output_dir+'/model.ckpt-'+str(int(item))
         for result in estimator.predict(predict_input_fn, checkpoint_path=checkpoint_path, yield_single_examples=True):
             if len(all_results) % 1000 == 0:
                 tf.logging.info("Processing example: %d" % (len(all_results)))
@@ -1295,16 +1294,19 @@ def main(_):
                     unique_id=unique_id,
                     start_logits=start_logits,
                     end_logits=end_logits))
+        print(all_results[0])
 
-        output_prediction_file = os.path.join(FLAGS.output_dir, 'ckpt'+str(item)+"_predictions.json")
-        output_nbest_file = os.path.join(FLAGS.output_dir, 'ckpt'+str(item)+"_nbest_predictions.json")
-        output_null_log_odds_file = os.path.join(FLAGS.output_dir, 'ckpt'+str(item)+"_null_odds.json")
+        output_prediction_file = os.path.join(FLAGS.output_dir, 'ckpt'+str(int(item))+"_predictions.json")
+        output_nbest_file = os.path.join(FLAGS.output_dir, 'ckpt'+str(int(item))+"_nbest_predictions.json")
+        output_null_log_odds_file = os.path.join(FLAGS.output_dir, 'ckpt'+str(int(item))+"_null_odds.json")
 
         write_predictions(eval_examples, eval_features, all_results,
                           FLAGS.n_best_size, FLAGS.max_answer_length,
                           FLAGS.do_lower_case, output_prediction_file,
                           output_nbest_file, output_null_log_odds_file)
-
+    time_file = FLAGS.output_dir + '/training_time.txt'
+    with open(time_file, 'a', encoding='utf-8') as f:
+        f.write('Predicting time used = {0}min'.format(int((time.time()-start_time)/60))+'\n')
 
 if __name__ == "__main__":
   # flags.mark_flag_as_required("vocab_file")

@@ -9,7 +9,7 @@ python run_squad.py \
 --predict_file=./data/squad/dev-v2.0.json \
 --train_batch_size=16 \
 --learning_rate=3e-5 \
---num_train_epochs=4.0 \
+--num_train_epochs=1.0 \
 --max_seq_length=290 \
 --doc_stride=128 \
 --output_dir=./data/squad/layer-1 \
@@ -18,7 +18,6 @@ python run_squad.py \
 --null_score_diff_threshold=0.0 \
 --layer_used=-1 \
 --use_pretrained_embed=False \
---num_eval_pred=20 \
 --ckpt_saved_times=5
 
 :<<annotation

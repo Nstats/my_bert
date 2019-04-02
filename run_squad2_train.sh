@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-python run_squad.py \
+python run_squad_mytest.py \
 --vocab_file=./data/pretrained_model/uncased_base/vocab.txt \
 --bert_config_file=./data/pretrained_model/uncased_base/bert_config.json \
 --init_checkpoint=./data/pretrained_model/uncased_base/bert_model.ckpt \
@@ -9,7 +9,7 @@ python run_squad.py \
 --predict_file=./data/squad/dev-v2.0.json \
 --train_batch_size=16 \
 --learning_rate=3e-5 \
---num_train_epochs=1.0 \
+--num_train_epochs=0.01 \
 --max_seq_length=290 \
 --doc_stride=128 \
 --output_dir=./data/squad/layer-1 \

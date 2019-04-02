@@ -1267,6 +1267,11 @@ def main(_):
         output_fn=append_feature)
     eval_writer.close()
 
+    tf.logging.info("***** Running predictions *****")
+    tf.logging.info("  Num orig examples = %d", len(eval_examples))
+    tf.logging.info("  Num split examples = %d", len(eval_features))
+    tf.logging.info("  Batch size = %d", FLAGS.predict_batch_size)
+
     predict_input_fn = input_fn_builder(
         input_file=eval_writer.filename,
         seq_length=FLAGS.max_seq_length,
@@ -1278,7 +1283,7 @@ def main(_):
     for i in range(FLAGS.ckpt_saved_times-1):
         ckpt_step_list.append(ckpt_step-FLAGS.save_checkpoints_steps*i)
     ckpt_step_list.reverse()
-    print('ckpt_step_list = ', ckpt_step_list)
+    print('ckpt_step_list = ', ckpt_step_list, '\n')
 
     for item in ckpt_step_list:
         all_results = []
@@ -1294,7 +1299,7 @@ def main(_):
                     unique_id=unique_id,
                     start_logits=start_logits,
                     end_logits=end_logits))
-        print(all_results[0])
+        print(all_results[-1])
 
         output_prediction_file = os.path.join(FLAGS.output_dir, 'ckpt'+str(int(item))+"_predictions.json")
         output_nbest_file = os.path.join(FLAGS.output_dir, 'ckpt'+str(int(item))+"_nbest_predictions.json")
